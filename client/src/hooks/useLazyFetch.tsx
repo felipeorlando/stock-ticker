@@ -7,34 +7,32 @@ interface FetchOptions {
   skip?: boolean;
 }
 
-export function useFetch<T>(url: string, options?: FetchOptions): { data: T | null; loading: boolean; error: any } {
+export function useLazyFetch<T>(url: string, options?: FetchOptions) {
   const [state, setState] = useState<{
     data: T | null;
     loading: boolean;
     error: any;
   }>({
     data: null,
-    loading: true,
+    loading: false,
     error: null,
   });
 
-  useEffect(() => {
+  const fetchUrl = () => {
     setState({ data: null, loading: true, error: null });
-
-    if (options?.skip) {
-      setState({ data: null, loading: false, error: null });
-      return;
-    }
 
     fetch(url, options)
       .then((response) => response.json())
       .then((data) => {
-        setState({ data, loading: false, error: null });
+        if (data.error) throw new Error(data.error);
+
+        const formattedData = camelCaseKeys(data);
+        setState({ data: formattedData, loading: false, error: null });
       })
       .catch((err) => {
         setState({ data: null, loading: false, error: err.message });
       });
-  }, [url]);
+  };
 
-  return state;
+  return { ...state, fetchUrl };
 }

@@ -1,11 +1,7 @@
 import React from 'react';
-import { useFetch } from '../../hooks/useFetch';
+import { dollarize } from '../../utils/dollarize';
 
-interface StockDataDisplayProps {
-  ticker: string;
-}
-
-interface StockData {
+export interface StockData {
   maxPrice: number;
   minPrice: number;
   maxVolume: number;
@@ -14,11 +10,13 @@ interface StockData {
   averageVolume: number;
 }
 
-const StockDataDisplay: React.FC<StockDataDisplayProps> = ({ ticker }) => {
-  const { data, loading, error } = useFetch<StockData>(`http://localhost:3003/api/stocks/${ticker}`, {
-    skip: !ticker,
-  });
+interface StockDataDisplayProps {
+  data: StockData | null;
+  loading: boolean;
+  error: string | null;
+}
 
+const StockDataDisplay: React.FC<StockDataDisplayProps> = ({ data, loading, error }) => {
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -31,14 +29,35 @@ const StockDataDisplay: React.FC<StockDataDisplayProps> = ({ ticker }) => {
     return <div>No data available</div>;
   }
 
+  const { maxPrice, minPrice, maxVolume, minVolume, averagePrice, averageVolume } = data;
+
   return (
-    <div>
-      <p>Average Stock Price: {data.averagePrice}</p>
-      <p>Maximum Volume: {data.maxVolume}</p>
-      <p>Minimum Volume: {data.minVolume}</p>
-      <p>Maximum Stock Price: {data.maxPrice}</p>
-      <p>Minimum Stock Price: {data.minPrice}</p>
-    </div>
+    <table className="table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Maximum</th>
+          <th>Minimum</th>
+          <th>Average</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Price</td>
+          <td>{dollarize(maxPrice)}</td>
+          <td>{dollarize(minPrice)}</td>
+          <td>{dollarize(averagePrice)}</td>
+        </tr>
+
+        <tr>
+          <td>Volume</td>
+          <td>{dollarize(maxVolume)}</td>
+          <td>{dollarize(minVolume)}</td>
+          <td>{dollarize(averageVolume)}</td>
+        </tr>
+      </tbody>
+    </table>
   );
 };
 

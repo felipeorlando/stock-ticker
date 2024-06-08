@@ -1,22 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { useThrottle } from '@uidotdev/usehooks';
-import StockDataDisplay from '../StockDataDisplay';
+import React, { useState } from 'react';
+import StockDataDisplay, { StockData } from '../StockDataDisplay';
+import { useLazyFetch } from '../../hooks/useLazyFetch';
 
 const TickerInput: React.FC = () => {
   const [ticker, setTicker] = useState<string>('');
+  const { data, loading, error, fetchUrl } = useLazyFetch<StockData>(`http://localhost:3003/api/stocks/${ticker}`);
 
-  const throttledValue = useThrottle(ticker, 1000);
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (loading) return;
+    fetchUrl();
+  }
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTicker(e.target.value);
+  }
 
   return (
     <div>
-      <input
-        type="text"
-        value={ticker}
-        onChange={(e) => setTicker(e.target.value)}
-        placeholder="Enter stock ticker"
-      />
+      <form onSubmit={onFormSubmit} className="form">
+        <input
+          type="text"
+          value={ticker}
+          placeholder="Enter stock ticker"
+          onChange={onInputChange}
+          name="ticker"
+          disabled={loading}
+          className="input"
+        />
 
-      <StockDataDisplay ticker={throttledValue} />
+        <button
+          type="submit"
+          disabled={loading}
+          className="button"
+        >
+          Submit
+        </button>
+      </form>
+
+      <StockDataDisplay
+        data={data}
+        loading={loading}
+        error={error}
+      />
     </div>
   );
 };
