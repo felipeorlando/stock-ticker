@@ -1,0 +1,39 @@
+# Ignore bundler config
+/.bundle
+
+# Ignore log files
+/log/*
+!/log/.keep
+
+# Ignore tempfiles
+/tmp
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+
+# Ignore SQLite databases
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+# Ignore test, development, and local production credentials
+/config/master.key
+/config/credentials.yml.enc
+
+# Ignore node_modules
+/node_modules
+
+# Ignore yarn files
+/yarn-error.log
+
+# Ignore coverage files
+/coverage
+
+# Ignore spec files
+/spec
