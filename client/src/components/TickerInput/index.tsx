@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StockDataDisplay, { StockData } from '../StockDataDisplay';
 import { useLazyFetch } from '../../hooks/useLazyFetch';
+import './TickerInput.css';
 
 const TickerInput: React.FC = () => {
   const [ticker, setTicker] = useState<string>('');
@@ -17,7 +18,11 @@ const TickerInput: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
+      <h1 className="title">
+        Enter a stock ticker:
+      </h1>
+
       <form onSubmit={onFormSubmit} className="form">
         <input
           type="text"
@@ -43,7 +48,7 @@ const TickerInput: React.FC = () => {
         loading={loading}
         error={error}
       />
-    </div>
+    </>
   );
 };
 
